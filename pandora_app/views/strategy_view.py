@@ -14,12 +14,6 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-# Create your views here.
-
-# class StrategyViewSet(viewsets.ModelViewSet):
-#     queryset = Strategy.objects.all().order_by('id')
-#     serializer_class = StrategySerializer
-
 @method_decorator(csrf_exempt, name='dispatch')
 class StrategyCR(View):
     def get(self, request):
@@ -81,44 +75,3 @@ class StrategyUpdate(View):
         }
 
         return JsonResponse(data)
-
-@method_decorator(csrf_exempt, name='dispatch')
-class InstStrategy(View):
-    def get(self, request, strategy_id):
-        items = SpecificStrategyInst.objects.filter(strategy_id=strategy_id).all()
-        items_count = SpecificStrategyInst.objects.filter(strategy_id=strategy_id).count()
-
-        items_data = []
-        for item in items:
-            items_data.append({
-                'id': item.pk,
-                'description': item.description,
-                'strategy': StrategySerializer(item.strategy).data
-            })
-
-        data = {
-            'items': items_data,
-            'count': items_count,
-        }
-
-        return JsonResponse(data)
-    def post(self, request, strategy_id):
-        data = json.loads(request.body.decode("utf-8"))
-        d_desc = data.get('strategy_desc')
-
-        strategy_data = {
-            'description': d_desc,
-            'strategy_id': strategy_id,
-        }
-
-        created_item = SpecificStrategyInst.objects.create(**strategy_data)
-
-        data = {
-            "message": f"New Specific Institute Strategy added: {created_item.id}"
-        }
-
-        return JsonResponse(data, status=201) 
-
-def homepage(request):
-    return render(request, 'index.html', context={})
-
