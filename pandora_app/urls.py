@@ -13,7 +13,10 @@ router = routers.DefaultRouter()
 
 urlpatterns = [
     path('', include(router.urls)),
+
+    #Strategies API
     path('strategy/', StrategyCR.as_view()),
     path('update-strategy/<int:strategy_id>', StrategyUpdate.as_view()),
+    
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
